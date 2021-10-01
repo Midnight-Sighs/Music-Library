@@ -5,4 +5,5 @@ urlpatterns = [
     path('music/', views.SongList.as_view()),
     path('music/<int:pk>/', views.SongDetail.as_view()),
     path('music/new', views.SongNew.as_view()),
+    path('music/delete/<int:pk>/', views.SongDelete.as_view())
 ]
