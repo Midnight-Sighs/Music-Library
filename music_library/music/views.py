@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from rest_framework.serializers import Serializer
 from .models import Song
 from .serializers import SongSerializer
 from rest_framework.views import APIView
@@ -36,28 +37,16 @@ class SongDetail(APIView):
         serializer = SongSerializer(song)
         return Response(serializer.data)
 
-    def post(self, request):
-        serializer = SongSerializer(data=request.data)
+    def put(self, request, pk):
+        song = self.get_object(pk)
+        serializer = SongSerializer (song, data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+            return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-class SongDelete(APIView):
-    def get_object(self, pk):
-        try:
-            return Song.objects.get(pk=pk)
-        except Song.DoesNotExist:
-            raise status.HTTP_404_NOT_FOUND
-    
-    def get(self, request, pk):
-        song = self.get_object(pk)
-        serializer = SongSerializer(song)
-        return Response(serializer.data)
 
     def delete(self, request, pk):
         song = self.get_object(pk)
         song.delete()
-        return Response(status.HTTP_200_OK)    
-
+        return Response(status.HTTP_200_OK) 
+    
